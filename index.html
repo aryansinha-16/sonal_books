@@ -5063,6 +5063,7 @@ function selectRole(role) {
   if (window.setBgTab) window.setBgTab(role === 'admin' ? 'home' : 'expenses');
 
   if (role === 'admin') {
+    _currentPage = '';
     showPage('home');
   } else {
     // Sneha sees her own expense view
