@@ -884,7 +884,7 @@ body.sneha-mode #bg-customiser { display:none; }
 
 </style>
 </head>
-<body data-tab="expenses">
+<body data-tab="home">
 <canvas id="bg-canvas" width="1920" height="911"></canvas>
 
 <!-- SPLASH SCREEN -->
@@ -995,7 +995,7 @@ body.sneha-mode #bg-customiser { display:none; }
         <div class="nav-item-inner"><span id="nav-icon-bank">🏦</span><span id="nav-label-bank">Bank Statement</span></div>
         <button class="nav-edit-btn" onclick="openNavEdit(event,&#39;bank&#39;)" title="Rename">✏</button>
       </div>
-      <div class="nav-item active" id="nav-expenses" onclick="showPage(&#39;expenses&#39;)">
+      <div class="nav-item" id="nav-expenses" onclick="showPage(&#39;expenses&#39;)">
         <div class="nav-item-inner"><span id="nav-icon-expenses">💸</span><span id="nav-label-expenses">Personal Expenses</span></div>
         <button class="nav-edit-btn" onclick="openNavEdit(event,&#39;expenses&#39;)" title="Rename">✏</button>
       </div>
@@ -5063,7 +5063,7 @@ function selectRole(role) {
   if (window.setBgTab) window.setBgTab(role === 'admin' ? 'home' : 'expenses');
 
   if (role === 'admin') {
-    renderHome();
+    showPage('home');
   } else {
     // Sneha sees her own expense view
     showPage('add');
