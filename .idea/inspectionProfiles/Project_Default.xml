@@ -1,0 +1,27 @@
+<component name="InspectionProjectProfileManager">
+  <profile version="1.0">
+    <option name="myName" value="Project Default" />
+    <inspection_tool class="PyPackageRequirementsInspection" enabled="true" level="WARNING" enabled_by_default="true">
+      <option name="ignoredPackages">
+        <list>
+          <option value="continue" />
+          <option value="langchain-community" />
+          <option value="langchain-core" />
+          <option value="pyodbc" />
+          <option value="groq" />
+          <option value="fastapi" />
+          <option value="pydantic" />
+          <option value="python-dotenv" />
+          <option value="python-jose" />
+          <option value="passlib" />
+          <option value="protobuf" />
+          <option value="google-api-python-client" />
+          <option value="langchain-huggingface" />
+          <option value="bcrypt" />
+          <option value="mcp" />
+        </list>
+      </option>
+    </inspection_tool>
+    <inspection_tool class="SqlNoDataSourceInspection" enabled="false" level="WARNING" enabled_by_default="false" />
+  </profile>
+</component>
