@@ -97,14 +97,31 @@ def _delete_row_by_id(entry_id: str):
 
 
 # ── DRIVE HELPERS ────────────────────────────────────────────────────────────
-def _upload_to_drive(filename: str, mimetype: str, data: bytes) -> str:
-    """Upload bytes to Drive folder, return public shareable URL."""
+def _get_or_create_subfolder(name: str) -> str:
+    """Return the Drive folder ID for a named subfolder, creating it if needed."""
     svc = drive()
-    meta = {"name": filename, "parents": [DRIVE_FOLDER]}
+    q = (f"name='{name}' and '{DRIVE_FOLDER}' in parents "
+         f"and mimeType='application/vnd.google-apps.folder' and trashed=false")
+    results = svc.files().list(q=q, fields="files(id)").execute().get("files", [])
+    if results:
+        return results[0]["id"]
+    folder = svc.files().create(
+        body={"name": name, "mimeType": "application/vnd.google-apps.folder",
+              "parents": [DRIVE_FOLDER]},
+        fields="id",
+    ).execute()
+    return folder["id"]
+
+
+def _upload_to_drive(filename: str, mimetype: str, data: bytes,
+                     subfolder: str = None) -> str:
+    """Upload bytes to Drive (optionally into a named subfolder), return public URL."""
+    svc = drive()
+    parent = _get_or_create_subfolder(subfolder) if subfolder else DRIVE_FOLDER
+    meta = {"name": filename, "parents": [parent]}
     media = MediaIoBaseUpload(io.BytesIO(data), mimetype=mimetype)
     file = svc.files().create(body=meta, media_body=media, fields="id").execute()
     file_id = file["id"]
-    # Make it publicly readable so the img src works in the browser
     svc.permissions().create(
         fileId=file_id,
         body={"type": "anyone", "role": "reader"},
@@ -182,15 +199,16 @@ def delete_expense(entry_id):
 
 @app.route("/api/upload-csv", methods=["POST"])
 def upload_csv():
-    """Save uploaded CSV to Drive and return the Drive URL."""
+    """Save uploaded CSV to Drive subfolder and return the Drive URL."""
     try:
         if "file" not in request.files:
             return jsonify({"error": "No file"}), 400
         f = request.files["file"]
         filename = f.filename or f"upload_{datetime.now().timestamp()}.csv"
+        subfolder = request.form.get("subfolder")  # "personal-expense" or "business-expense"
         csv_bytes = f.read()
-        url = _upload_to_drive(filename, "text/csv", csv_bytes)
-        return jsonify({"ok": True, "url": url, "filename": filename})
+        url = _upload_to_drive(filename, "text/csv", csv_bytes, subfolder=subfolder)
+        return jsonify({"ok": True, "url": url, "filename": filename, "subfolder": subfolder})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
