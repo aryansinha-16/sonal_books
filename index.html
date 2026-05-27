@@ -1052,6 +1052,17 @@ body.sneha-mode #bg-customiser { display:none; }
         <div class="status-line"><span class="status-dot loaded" id="dot-bank"></span>Bank Statement</div>
         <div class="status-line"><span class="status-dot loaded" id="dot-exp"></span>Personal Expenses</div>
       </div>
+
+      <button onclick="confirmClearData('all')" style="
+        width:100%;margin-top:10px;padding:7px 10px;
+        border-radius:8px;border:1px solid rgba(220,38,38,.3);
+        background:rgba(220,38,38,.06);color:var(--red);
+        font-size:.72rem;font-weight:600;font-family:'DM Sans',sans-serif;
+        cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;
+        transition:all .2s;" onmouseover="this.style.background='rgba(220,38,38,.14)';this.style.borderColor='var(--red)'" onmouseout="this.style.background='rgba(220,38,38,.06)';this.style.borderColor='rgba(220,38,38,.3)'">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6l-1 14H6L5 6"></path><path d="M10 11v6M14 11v6"></path><path d="M9 6V4h6v2"></path></svg>
+        Reset All Data
+      </button>
     </div>
   </nav>
 
@@ -2860,6 +2871,11 @@ function executeClear() {
   if (type === 'all') {
     state.budgetOverrides = {};
     ['home','bank','exp','comb'].forEach(p => { state.dateRange[p] = {from:null,to:null}; });
+    // Also wipe staff expenses
+    staffPending = [];
+    staffApproved = [];
+    localStorage.removeItem(STAFF_KEY);
+    updateStaffBadge();
   }
 
   populateBankCatFilter();
